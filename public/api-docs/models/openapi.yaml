@@ -269,6 +269,64 @@ paths:
           $ref: '#/components/responses/404_Resource_Not_Found_Response'
       security:
         - MiWApiSecurity: []
+    post:
+      tags:
+        - Results
+      summary: Creates a new result
+      description: 'Creates a new result'
+      operationId: api_results_post
+      requestBody:
+        description: '`Result` properties to add to the system'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResultData'
+      responses:
+        '201':
+          description: '`Created`: result created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        '400':
+          description: '`Bad Request`: result does not exists'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                code: 400
+                message: '`Bad Request`: result does not exists'
+        '401':
+          $ref: '#/components/responses/401_Unauthorized_Response'
+        '403':
+          $ref: '#/components/responses/403_Forbidden_Response'
+        '422':
+          description: '`Unprocessable entity`: result or user is left out'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                code: 422
+                message: '`Unprocessable entity`: result or user is left out'
+      security:
+        - MiWApiSecurity: []
+    options:
+      tags:
+        - Results
+      summary: Provides the list of HTTP supported methods
+      description: 'Return a `Allow` header with a comma separated list of HTTP supported methods.'
+      operationId: api_results_options
+      responses:
+        '200':
+          description: '`Allow` header &lt;Response body is empty&gt;'
+          headers:
+            Allow:
+              description: 'List of HTTP supported methods'
+              schema:
+                type: string
   '/results/{resultId}':
     get:
       tags:
@@ -293,6 +351,80 @@ paths:
           $ref: '#/components/responses/404_Resource_Not_Found_Response'
       security:
         - MiWApiSecurity: []
+    put:
+      tags:
+        - Results
+      summary: 'Updates a result'
+      description: 'Updates the result identified by `resultId`.'
+      operationId: api_results_put
+      parameters:
+        - $ref: '#/components/parameters/resultId'
+      requestBody:
+        description: '`Result` data to update'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResultData'
+      responses:
+        '209':
+          description: '`Content Returned`: result previously existed and is now updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        '400':
+          description: '`Bad Request`: result does not exists'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example:
+                code: 400
+                message: '`Bad Request`: result does not exists'
+        '401':
+          $ref: '#/components/responses/401_Unauthorized_Response'
+        '403':
+          $ref: '#/components/responses/403_Forbidden_Response'
+        '404':
+          $ref: '#/components/responses/404_Resource_Not_Found_Response'
+      security:
+        - MiWApiSecurity: []
+    delete:
+      tags:
+        - Results
+      summary: 'Deletes a result'
+      description: 'Deletes the result identified by `resultId`.'
+      operationId: api_results_delete
+      parameters:
+        - $ref: '#/components/parameters/resultId'
+      responses:
+        '204':
+          description: 'Result deleted &lt;Response body is empty&gt;'
+        '401':
+          $ref: '#/components/responses/401_Unauthorized_Response'
+        '403':
+          $ref: '#/components/responses/403_Forbidden_Response'
+        '404':
+          $ref: '#/components/responses/404_Resource_Not_Found_Response'
+      security:
+        - MiWApiSecurity: []
+    options:
+      tags:
+        - Results
+      summary: 'Provides the list of HTTP supported methods'
+      description: 'Return a `Allow` header with a comma separated list of HTTP supported methods.'
+      operationId: api_results_options_id
+      parameters:
+        - $ref: '#/components/parameters/resultId'
+      responses:
+        '200':
+          description: '`Allow` header &lt;Response body is empty&gt;'
+          headers:
+            Allow:
+              description: 'List of HTTP supported methods'
+              schema:
+                type: string
 components:
   schemas:
     LoginRequestBody:
@@ -394,6 +526,20 @@ components:
           id: 1508
           result: 100
           user: 25
+    ResultData:
+      properties:
+        result:
+          description: 'Result of user'
+          type: integer
+          format: int64
+        user:
+          description: 'User id assigned to result'
+          type: integer
+          format: int64
+      type: object
+      example:
+        result: 100
+        user: 25
   responses:
     401_Unauthorized_Response:
       description: '`Unauthorized`: invalid `Authorization` header'
