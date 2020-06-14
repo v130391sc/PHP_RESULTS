@@ -89,7 +89,7 @@ class ApiResultsController extends AbstractController
 
         return Utils::apiResponse(
             Response::HTTP_OK,
-            ['result' => $results],
+            ['results' => $results],
             $format
         );
     }
@@ -275,6 +275,7 @@ class ApiResultsController extends AbstractController
      *     statusCode=401,
      *     message="Invalid credentials."
      * )
+     * @throws \Exception
      */
     public function postAction(Request $request): Response
     {
@@ -282,16 +283,16 @@ class ApiResultsController extends AbstractController
         $postData = json_decode($body, true);
         $format = Utils::getFormat($request);
 
-        if (!isset($postData['result'], $postData['user'])) {
-            // 422 - Unprocessable Entity Faltan datos
-            $message = new Message(Response::HTTP_UNPROCESSABLE_ENTITY, Response::$statusTexts[422]);
-            return Utils::apiResponse(
-                $message->getCode(),
-                ['message' => $message],
-                $format
-            );
-        }
         if ($this->isGranted('ROLE_ADMIN')) {
+            if (!isset($postData['result'], $postData['user'])) {
+                // 422 - Unprocessable Entity Faltan datos
+                $message = new Message(Response::HTTP_UNPROCESSABLE_ENTITY, Response::$statusTexts[422]);
+                return Utils::apiResponse(
+                    $message->getCode(),
+                    ['message' => $message],
+                    $format
+                );
+            }
             /** @var User $user */
             $user = $this->entityManager
                 ->getRepository(User::class)
@@ -310,6 +311,15 @@ class ApiResultsController extends AbstractController
             $this->entityManager->persist($result);
             $this->entityManager->flush();
         } elseif ($this->isGranted('ROLE_USER')) {
+            if (!isset($postData['result'], $postData['user'])) {
+                // 422 - Unprocessable Entity Faltan datos
+                $message = new Message(Response::HTTP_UNPROCESSABLE_ENTITY, Response::$statusTexts[422]);
+                return Utils::apiResponse(
+                    $message->getCode(),
+                    ['message' => $message],
+                    $format
+                );
+            }
             /** @var User $user */
             $user = $this->entityManager
                 ->getRepository(User::class)
@@ -447,7 +457,7 @@ class ApiResultsController extends AbstractController
 
         return Utils::apiResponse(
             209,                        // 209 - Content Returned
-            ['user' => $result],
+            ['result' => $result],
             $format
         );
     }

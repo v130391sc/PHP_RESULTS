@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as JMS;
@@ -80,7 +81,7 @@ class Result
     /**
      * Result time
      *
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(
      *     name     = "time",
@@ -95,12 +96,12 @@ class Result
      *
      * @param int       $result result
      * @param User      $user   user
-     * @param \DateTime $time   time
+     * @param DateTime $time   time
      */
     public function __construct(
         int $result = 0,
         User $user = null,
-        \DateTime $time = null
+        DateTime $time = null
     ) {
         $this->id     = 0;
         $this->result = $result;
@@ -148,6 +149,16 @@ class Result
     public function getTime(): string
     {
         return $this->time->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * @param DateTime $time
+     * @return Result
+     */
+    public function setTime(DateTime $time): Result
+    {
+        $this->time = $time;
+        return $this;
     }
 
     /**
